@@ -1,0 +1,123 @@
+\documentclass[10pt]{article}
+\title{Notes from \emph{Operating Systems Three Easy Pieces}}
+\author{Sachidananda Urs}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document contains the introductory notes from the book OS Three
+Easy Pieces. The book aims to teach operating systems by presenting two types of
+projects ``system programming'' projects and ``XV6'' based projects. See
+https://github.com/remzi-arpacidusseau/ostep-projects for more details.
+\end{abstract}
+
+\subsection*{Introduction}
+The three pieces the book aims to teach are \emph{virtualization},
+\emph{concurrency}, and \emph{persistence}.
+
+When we talk about \emph{virtualization}, we look at the virtualization of
+\textbf{CPU} and \textbf{memory}.
+
+When we talk about \emph{concurrency}, we look at threads, locks, condition
+variables, semaphores, etc. And common problems in concurrency, event based
+concurrency, ...
+
+When we talk about \emph{persistence} we talk about I/O devices, hard disk
+drives, RAID, files and directories, file system implementation ...
+
+We also look into the basics of distributed systems, NFS, and AFS.
+
+\subsection*{Virtualization}
+We try to understand the virtualization of \emph{CPU} and \emph{Memory}
+
+\subsubsection*{CPU Virtualization}
+We study the abstraction (a process), APIs, states of a process, the data
+structures involved, limited direct execution, and scheduling. Scheduling is
+studied extensively.
+
+\subsubsection*{Memory Virtualization}
+We study the abstraction of memory (address space), APIs, address translation,
+segmentation, free space management, paging and TLBs, swap space, policies, case
+studies (VAX/VMS, Linux, illumos).
+
+\subsection*{Concurrency}
+We study the importance of concurrency and why we even bother about it. And
+emphasize on threads, thread APIs, locks, condition variables, semaphores, ...
+
+\subsection*{Persistence}
+We study the I/O devices, viz hard disk drives, SSDs, and RAIDs. And the
+related software concepts of files and directories, file system implementation
+case studies, FFS, data integrity, so on.
+
+\newpage
+\section*{Introduction to Operating Systems}
+We try to answer a simple question \emph{``How does the operating system
+  virtualize resources?''}
+
+Breaking the question even further we ask:
+\begin{enumerate}
+  \item What mechanism and policies are implemented by the operating system to
+    attain virtualization?
+  \item How does the operating system do it efficiently?
+  \item What hardware support is needed?
+\end{enumerate}
+
+\subsection*{On Virtualization}
+Virtualization is a technique where operating system takes a physical resource
+(processor, memory, or disk) and transforms it into a more general, powerful,
+and easy-to-use virtual form of itself.
+
+Thus operating system is sometimes referred to as a virtual machine.
+
+Now the question arises, how to use these resources? Or how to interact with the
+operating system? This is done through a set of APIs called ``System calls''.
+
+Summarily, virtualization allows many programs to run (sharing CPU), many
+programs can concurrently access their data and instructions (sharing memory),
+many programs can access devices (by sharing disks, network etc).
+
+We examine some of the examples for:
+\begin{enumerate}
+  \item Virutalizing the CPU
+  \item Virtualizing the memory
+  \item Concurrency
+  \item Persistence
+\end{enumerate}
+
+\subsubsection*{Virtualizing the CPU}
+Consider a program which sleeps for a second and prints a string. Now, if the
+program is run multiple times parallelly, it appears to work simultaneously
+though we have a single CPU. How is this achieved? The OS provides an illusion
+of multiple virtual CPUs. The operating system virtualizes the CPU.
+
+Now, since the operating system runs multiple programs ``simultaneously'', if
+two programs want to run at a particular time, which one should run first?
+
+\subsubsection*{Virtualizing the memory}
+We try to answer the question, \emph{``What is memory virtualizing?''}
+
+Each process accesses its own private \emph{virtual address space}, which the
+operating system somehow maps to physical memory of the machine. Memory
+reference within one running program does not affect the address space of the
+other process. As far as running program is concerned it has the entire memory
+for itself. However, the physical memory is a shared resource, managed by the
+operating system.
+
+How does the operating system manage all this stuff is the concept called the
+virtual memory.
+
+\subsubsection*{Concurrency}
+If a threaded program is written carelessly, concurrency leads to all sorts of
+problems. The program does not behave as expected. By understanding concurrency
+we can write these programs in a much better way.
+
+\subsubsection*{Persistence}
+When we talk about persistence we mean file systems which manage the data storage
+and retrieval. We try to understand:
+\begin{enumerate}
+\item How is a file system written?
+\item What techniques are needed to manage persistent data correctly?
+\item How is high performance achieved?
+\item How is reliability achieved?
+\end{enumerate}
+\end{document}

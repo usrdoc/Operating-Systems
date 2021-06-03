@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\title{The Abstraction: The Process}
+\author{Sachidananda Urs}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  We try to understand one of the basic absctractins, a process. Operating
+  System provides the illusion of a nearly endless supply of said CPUs. We try
+  to understand how the Operating System provides the illusion of many CPUs.
+\end{abstract}
+
+\subsection*{Introduction}
+
+Operating System provies an illusion of many CPUs by virtualizing the CPU. The
+concept of a process helps us understand how the Operating System virtualizes
+the CPU. CPU is shared between the processes by stopping a process, running
+another, so on...
+
+But this is not free, but comes with a cost, ``performance''. As the number of
+processes increase their running time increases as well, i.e each process runs
+slowly. This technique is called ``time sharing of the CPU''.
+
+We try to answer the following questions. \emph{What constitutes a process and
+what is meant by its machine state?}. \emph{Understand the the process API:
+  create, destroy, wait, status, ...}. \emph{How is a process created?}
+\emph{What are the process states?} \emph{What are the data structures of a
+  process?}
+
+Getting back to the question \emph{``How is CPU virtualized?''}
+
+The Operating System uses low-level machinery and high-level intelligence to
+provide the CPU virtualization. i.e \emph{Mechanisms} (low-level machinery) and
+\emph{policies} (high-level intelligence).
+
+\begin{enumerate}
+  \item \textbf{Mechanisms} include context-switching. We learn \emph{what is a
+    context switch?} and \emph{How is it implemented?}. Context-switch gives the
+    Operating System ability to stop running one program and start running
+    another on a given CPU which is referred to as \emph{time sharing}.
+  \item \textbf{Policies} are algorithms making some kind of decision within the
+    Operating System. For example, if n programs are run simultaneously which
+    one is run first? second? so on ... The ``Scheduling policy'' in the
+    Operating System makes this decision.
+
+    Linux supports the following scheduling policies: \emph{FIFO}, \emph{Round
+      Robin}, \emph{CFS - Completely Fair Scheduler}, \emph{SCHED\_DEADLINE},
+    \emph{SCHED\_OTHER} ... see sched(7) for more details.
+
+    Illumos supports \emph{FSS - Fair Share Scheduler}, \emph{Fixed Priority}
+    ... (are there more?)
+\end{enumerate}
+
+\subsection*{The Abstraction: The Process}
+Process is one of the most basic abstractions. We try answer the following
+questions:
+\begin{enumerate}
+\item Machine state of a process
+  \begin{enumerate}
+  \item What a process can read/update?
+  \item What parts of the machine are important for its execution?
+    \begin{enumerate}
+    \item \emph{Memory} that process can access (its address space)
+    \item \emph{registers} (PC, SP, FP)
+    \item \emph{Persistent storage devices} (List of files process has opened)
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+\subsection*{Process API}
+We try to understand the API provided by the Operating System to manage the
+processes, \emph{create, destroy, wait, status} to name a few.\\
+
+\textbf{Process Creation:} To create a process the OS must first find the
+program on disk and load it into memory (code and static data, this forms the
+address space of the process).
+
+The loading of the program is done in two ways:
+\begin{enumerate}
+\item Eagerly -- all program is loaded at once
+\item Lazily -- program is loaded as needed (see paging and swapping)
+\end{enumerate}
+
+Then allocate memory for program's run-time stack and initialize the required
+variables.
+
+Allocate memory for program's heap. Heap will be small at first and may grow to
+become very huge as the program runs.
+
+Then the other initializations like setting up the input, output, error
+descriptors are done.
+
+Finally the process is started, i.e at main. The OS tranfers the control of the
+CPU to newly created process, thus the program begins its execution.
+
+\subsection*{Process States}
+In a very simplified view, a process can be in any of the following states
+\begin{enumerate}
+\item \textbf{Running} -- Process is running on a processor executing
+  instructions.
+\item \textbf{Ready/Waiting} -- At the moment process doesn't have a processor,
+  OS has not given control of the processor.
+\item \textbf{Blocked} Process is waiting for some other event. For example,
+  process has initiated an I/O and waiting for it to finish, meanwhile processor
+  is relinquished for another process.
+\end{enumerate}
+
+%% \subsection*{Conclusion}
+%% In the subsequent notes we learn the process data structures and how they are
+%% used to manage the processes and how to manipulate them.
+
+\end{document}
