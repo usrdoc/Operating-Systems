@@ -1,0 +1,60 @@
+\documentclass[11pt]{article}
+\title{The Process API}
+\author{Sachidananda Urs}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  This document briefly discusses the concepts of fork(2), wait(2), and
+  exec(2) syscalls, how to create a process using them and the interfaces.
+\end{abstract}
+
+\subsubsection*{The \emph{fork} system call}
+Best way to learn about the fork system call (apart from manual page) is to
+write a program to print ``Hello world'' in the parent and child process and And
+to observe their return codes along with their pids.
+
+Note that the output is not deterministic, i.e the message printed by parent
+might be first or second, need not be first always.
+
+When the parent creates the child, we have two processes. And which one gets
+scheduled first is determined by the scheduler. This creates a window for
+``non-determinism''. The \emph{non-determinism} leads to some interesting
+problems, especially in multi-threaded programs.
+
+\subsubsection*{The \emph{wait(2)} syscall}
+Upon creation of the child, the parent process can be made to wait till the
+child completes, this is achieved by the wait(2) syscall.
+
+\subsubsection*{The \emph{exec(2)} system call}
+The final and important piece of process creation API is the emph{exec()}
+call. The \emph{fork()} call creates a new process (child) and the \emph{exec}
+call in the child overlays the program on top of child. The heap and stack of
+child are reinitialized, it transforms the current program into a new one.
+
+\subsubsection*{Motivation for the fork-exec API}
+
+[\emph{Why not bundle fork and exec into a single call?}]
+
+Keeping the \emph{fork} and \emph{exec} separate gives better control for the
+programmer by allowing him to do any housekeeping work before calling the
+\emph{exec}.
+
+One of the useful applications of \emph{fork+exec} is the
+\emph{unix~shell}. This allows the shell to run code before the \emph{exec()}
+call, and allows it to do a alot of intersting stuff before the actual program
+is called by the \emph{exec} (for example to alter the environment).
+\\[8pt]
+Consider the shell redirection
+
+\emph{\$ cat hello.txt \(>\) foo.txt}
+
+Before the shell \emph{execs} \emph{``cat''} it closes the stdout and opens
+foo.txt. The open assigns the \emph{fd 0} to foo.txt. Since the Unix systems
+assigns free file descriptors, 0 was free upon closing stdout and thus 0 was
+assigned to foo.txt. Thus the output was sent to foo.txt instead of stdout.
+
+\subsubsection*{Process Control}
+Look up \emph{kill} and \emph{signal}.
+
+\end{document}
